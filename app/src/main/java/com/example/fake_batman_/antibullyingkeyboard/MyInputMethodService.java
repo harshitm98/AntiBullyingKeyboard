@@ -7,10 +7,15 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.IBinder;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
 
 public class MyInputMethodService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
+
+    private static final String TAG = "MyInputMethodService";
+    public String typedText = "";
+
     public MyInputMethodService() {
     }
 
@@ -45,11 +50,17 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
                         inputConnection.deleteSurroundingText(1, 0);
                     }else{
                         inputConnection.commitText("", 1);
+                        typedText.substring(0, typedText.length()-1);
                     }break;
+
+                case Keyboard.KEYCODE_DONE:
+                    inputConnection.commitText("\n".toString(), 1);
+                    typedText.concat("\n");
 
                 default:
                     char code = (char)primaryCode;
                     inputConnection.commitText(String.valueOf(code), 1);
+                    typedText.concat(String.valueOf(code));
 
             }
         }
@@ -57,7 +68,7 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
 
     @Override
     public void onText(CharSequence text) {
-
+        Log.d(TAG, "onText: " + text);
     }
 
     @Override
